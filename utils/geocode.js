@@ -6,16 +6,15 @@ const geocode = (address, callback) => {
   )}.json?access_token=${process.env.mapbox_key}&limit=1`;
   let error = undefined;
   let data = undefined;
-  request(urlMB, { json: true }, (err, res) => {
+  request(urlMB, { json: true }, (err, {body}) => {
     if (err) {
       error = "Unable to connect to location service!";
-    } else if (res.body.message || !res.body.features[0]) {
+    } else if (body.message || !body.features[0]) {
       error = "Unable to find location!";
     } else {
-      const resData = res.body;
-      const latitude = resData.features[0].center[1];
-      const longitude = resData.features[0].center[0];
-      const location = resData.features[0].place_name;
+      const latitude = body.features[0].center[1];
+      const longitude = body.features[0].center[0];
+      const location = body.features[0].place_name;
       data = { latitude, longitude, location };
     }
     callback(error, data);
